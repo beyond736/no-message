@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -25,10 +24,10 @@ public class MailUtils {
     static {
         try {
             host = "smtp.exmail.qq.com";
-            username = "jason@volfine.com";
-            password = "Ysjwgi611!!";
-            from = "jason@volfine.com";
-            nick = "daffodil";
+            username = "sales@volfine.com";
+            password = "Judy0926!!";
+            from = "sales@volfine.com";
+            nick = "Judy";
             // nick + from 组成邮箱的发件人信息
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,9 +37,9 @@ public class MailUtils {
     /**
      * 发送邮件
      *
-     * @param to       收件人列表，以","分割
-     * @param subject  标题
-     * @param body     内容
+     * @param to      收件人列表，以","分割
+     * @param subject 标题
+     * @param body    内容
      * @return
      * @throws MessagingException
      * @throws AddressException
@@ -108,22 +107,23 @@ public class MailUtils {
         }
     }
 
-    public static void main(String[] args) throws IOException, MessagingException {
+    public static void main(String[] args) throws IOException, MessagingException, InterruptedException {
         //sendMail("beyond736@qq.com", "注册信息邮件", "<h2>注册邮件，有附件</h2>", null);
-        System.out.println("sendMail success!");
 
         String content = FileUtils.readFileToString(new File("F:\\volfine\\开发信\\mail.txt"), "UTF-8");
         String nameAndEmail = FileUtils.readFileToString(new File("F:\\volfine\\开发信\\name.txt"), "UTF-8");
 
-        sendMail("sales@volfine.com", "注册信息邮件", content.replace("%name%","Tan Jian"));
+        // sendMail("sales@volfine.com", "注册信息邮件", content.replace("%name%", "Tan Jian"));
 
         String[] nameAndEmail_arr = nameAndEmail.split("\r\n");
         for (String s : nameAndEmail_arr) {
-            String[] s_arr = s.split(",");
+            String[] s_arr = s.split("#");
             String name = s_arr[0].trim();
             String email = s_arr[1].trim();
-
-            System.out.println(name);
+            String title = s_arr[2].trim();
+            sendMail(email, title, content.replace("%name%", name));
+            System.out.println(email + "发送成功");
+            Thread.sleep(5000L);
         }
 
     }
