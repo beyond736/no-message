@@ -1,0 +1,4 @@
+jdbcUrl = jdbc:mysql://localhost/volfine?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+user = root
+password = admin
+devMode = true
