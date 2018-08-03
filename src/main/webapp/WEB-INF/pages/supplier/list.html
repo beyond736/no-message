@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="author" content="SHOP++ Team">
+    <meta name="copyright" content="SHOP++">
+    <title>店铺商品分类列表 - Powered By SHOP++</title>
+    #include("../include/meta.html")
+    <script type="text/javascript">
+        $().ready(function() {
+
+            var $delete = $("#supplierForm a.delete");
+
+
+            // 删除
+            $delete.deleteItem({
+                url: "/supplier/delete",
+                data: function() {
+                    return {
+                        id: $(this).data("id")
+                    };
+                },
+                removeElement: function() {
+                    return $(this).closest("tr");
+                },
+            });
+
+        });
+    </script>
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    #include("../include/header.html")
+    #include("../include/main-slider.html")
+    <div class="content-wrapper">
+    <div class="container-fluid">
+        <section class="content-header">
+            <h1>供应商列表</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="/business/index">
+                        <i class="fa fa-home"></i>
+                        首页
+                    </a>
+                </li>
+                <li class="active">供应商列表</li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <form id="supplierForm" action="/supplier/list" method="post" autocomplete="off">
+                        <input name="pageSize" type="hidden" value="">
+                        <input name="pageNumber" type="hidden" value="">
+                        <input name="searchProperty" type="hidden" value="">
+                        <input name="orderProperty" type="hidden" value="">
+                        <input name="orderDirection" type="hidden" value="">
+                        <div class="box">
+                            #@boxHeader('/supplier/add', page.pageSize)
+                            <div class="box-body table-responsive no-padding">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>
+                                            <i class="check-all fa fa-square-o" data-toggle="checkAll"></i>
+                                        </th>
+                                        <th>供应商名称</th>
+                                        <th>联系人</th>
+                                        <th>联系电话</th>
+                                        <th>QQ</th>
+                                        <th>阿里旺旺</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    #for(item : page.getList())
+                                        <tr>
+                                            <td>
+                                                <input name="ids" type="checkbox" value="#(item.id)">
+                                            </td>
+                                            <td>
+                                                <span style="margin-left: 0px; color: #000000;">#(item.company)</span>
+                                            </td>
+                                            <td>#(item.contacts)</td>
+                                            <td>#(item.phone)</td>
+                                            <td>
+                                                #if(sk.notBlank(item.qq))
+                                                    <a href="http://wpa.qq.com/msgrd?v=3&uin=#(item.qq)&menu=yes" target="_blank" title="QQ">
+                                                        <img src="/resources/business/images/instant_message_qq.png" alt="QQ" />
+                                                    </a>
+                                                #else
+                                                    无
+                                                #end
+                                            </td>
+                                            <td>
+                                                #if(sk.notBlank(item.wangwang))
+                                                    <a href="http://amos.alicdn.com/getcid.aw?v=2&uid=#(item.wangwang)&site=cntaobao&s=2&groupid=0&charset=utf-8" target="_blank" title="旺旺">
+                                                        <img src="/resources/business/images/instant_message_wangwang.png" alt="旺旺" />
+                                                    </a>
+                                                #else
+                                                    无
+                                                #end
+                                            </td>
+                                            <td>
+                                                <a href="/supplier/edit?id=#(item.id)">[编辑]</a>
+                                                <a class="delete" href="javascript:;" data-id="#(item.id)">[删除]</a>
+                                            </td>
+                                        </tr>
+                                    #end
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="box-footer clearfix">
+                                #@pagination(page.pageNumber, page.totalPage)
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+    #include("../include/footer.html")
+</div>
+</body>
+</html>

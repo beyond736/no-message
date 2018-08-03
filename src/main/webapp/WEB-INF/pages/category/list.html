@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="author" content="SHOP++ Team">
+    <meta name="copyright" content="SHOP++">
+    <title>店铺商品分类列表 - Powered By SHOP++</title>
+    #include("../include/meta.html")
+    <script type="text/javascript">
+        $().ready(function() {
+
+            var $delete = $("#storeProductCategoryForm a.delete");
+
+
+            // 删除
+            $delete.deleteItem({
+                url: "/business/store_product_category/delete",
+                data: function() {
+                    return {
+                        storeProductCategoryId: $(this).data("id")
+                    };
+                },
+                removeElement: function() {
+                    return $(this).closest("tr");
+                },
+            });
+
+        });
+    </script>
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    #include("../include/header.html")
+    #include("../include/main-slider.html")
+    <div class="content-wrapper">
+    <div class="container-fluid">
+        <section class="content-header">
+            <h1>店铺商品分类列表</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="/business/index">
+                        <i class="fa fa-home"></i>
+                        首页
+                    </a>
+                </li>
+                <li class="active">店铺商品分类列表</li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <form id="storeProductCategoryForm" action="/business/store_product_category/list" method="get">
+                        <input name="pageSize" type="hidden" value="">
+                        <input name="pageNumber" type="hidden" value="">
+                        <input name="searchProperty" type="hidden" value="">
+                        <input name="orderProperty" type="hidden" value="">
+                        <input name="orderDirection" type="hidden" value="">
+                        <div class="box">
+                            <div class="box-header">
+                                <div class="row">
+                                    <div class="col-xs-9">
+                                        <div class="btn-group">
+                                            <a class="btn btn-default" href="/category/add">
+                                                <i class="fa fa-plus"></i>
+                                                添加
+                                            </a>
+                                            <button class="btn btn-default" type="button" data-toggle="refresh">
+                                                <i class="fa fa-refresh"></i>
+                                                刷新
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-body table-responsive no-padding">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>分类名称</th>
+                                        <th>排序</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    #for(item : page.getList())
+                                        <tr>
+                                            <td>
+                                                <span style="margin-left: 0px; color: #000000;">#(item.name)</span>
+                                            </td>
+                                            <td>#(item.sort)</td>
+                                            <td>
+                                                <a href="/business/store_product_category/edit?storeProductCategoryId=4">[编辑]</a>
+                                                <a class="delete" href="javascript:;" data-id="4">[删除]</a>
+                                            </td>
+                                        </tr>
+                                    #end
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+    #include("../include/footer.html")
+</div>
+</body>
+</html>

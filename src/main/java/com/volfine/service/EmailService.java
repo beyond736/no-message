@@ -1,51 +1,44 @@
-package com.volfine.util;
+package com.volfine.service;
 
+import com.volfine.model.EmailAccount;
+import com.volfine.model.Mail;
 import org.apache.commons.io.FileUtils;
 
 import javax.activation.DataHandler;
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
-/**
- * java mail 工具类 发送开发信
- */
-public class MailUtils {
-    private static String host;
-    private static String username;
-    private static String password;
-    private static String from;
-    private static String nick;
+public class EmailService {
 
-    static {
-        try {
-            host = "smtp.exmail.qq.com";
-            username = "daffodil@volfine.com";
-            password = "Wanxiang926!!";
-            from = "daffodil@volfine.com";
-            nick = "daffodil";
-            // nick + from 组成邮箱的发件人信息
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static final EmailService me = new EmailService();
+
+    private EmailAccount dao = new EmailAccount();
+
+    public List<EmailAccount> findAll() {
+        return dao.find("select * from v_email_account order by id desc");
+    }
+
+    public void sendMail(Integer emailAccountId, String recipients, String content) throws UnsupportedEncodingException, MessagingException, InterruptedException {
+        EmailAccount account = new EmailAccount().findById(emailAccountId);
+
+        String[] nameAndEmail_arr = recipients.split("\r\n");
+        for (String s : nameAndEmail_arr) {
+            String[] s_arr = s.split("#");
+            String name = s_arr[0].trim();
+            String to = s_arr[1].trim();
+            String subject = s_arr[2].trim();
+            sendMail(account.getAccount(), account.getAccount(), account.getPassword(), account.getNickName(), to, subject, content.replace("{customerName}", name));
+            System.out.println(to + "发送成功");
+            Thread.sleep(12000L);
         }
     }
 
-    /**
-     * 发送邮件
-     *
-     * @param to      收件人列表，以","分割
-     * @param subject 标题
-     * @param body    内容
-     * @return
-     * @throws MessagingException
-     * @throws AddressException
-     * @throws UnsupportedEncodingException
-     */
-    public static boolean sendMail(String to, String subject, String body) throws AddressException, MessagingException,
+    public static boolean sendMail(String from, String username, String password, String nick, String to, String subject, String body) throws MessagingException,
             UnsupportedEncodingException {
         // 参数修饰
         if (body == null) {
@@ -57,7 +50,7 @@ public class MailUtils {
         // 创建Properties对象
         Properties props = System.getProperties();
         // 创建信件服务器
-        props.put("mail.smtp.host", host);
+        props.put("mail.smtp.host", "smtp.exmail.qq.com");
         props.put("mail.smtp.auth", "true"); // 通过验证
         props.put("mail.smtp.port", "465");
         props.put("mail.transport.protocol", "smtp");
@@ -105,34 +98,5 @@ public class MailUtils {
             System.out.println("None receiver!");
             return false;
         }
-    }
-
-    public static void main(String[] args) throws IOException, MessagingException, InterruptedException {
-        //sendMail("beyond736@qq.com", "注册信息邮件", "<h2>注册邮件，有附件</h2>", null);
-
-        String content = FileUtils.readFileToString(new File("F:\\volfine\\开发信\\mail.txt"), "UTF-8");
-        String nameAndEmail = FileUtils.readFileToString(new File("F:\\volfine\\开发信\\name.txt"), "UTF-8");
-
-//         sendMail("beyond736@qq.com", "注册信息邮件", content.replace("{customerName}", "Tan Jian"));
-
-        String[] nameAndEmail_arr = nameAndEmail.split("\r\n");
-        for (String s : nameAndEmail_arr) {
-            String[] s_arr = s.split("#");
-            String name = s_arr[0].trim();
-            String email = s_arr[1].trim();
-            String title = s_arr[2].trim();
-            try {
-                sendMail(email, title, content.replace("{customerName}", name));
-            } catch (Exception e) {
-//                FileUtils.writeLines();
-                System.out.println(email + "发送失败");
-                FileUtils.writeStringToFile(new File("F:\\volfine\\开发信\\result.txt"),email + "发送失败\r\n");
-                e.printStackTrace();
-            }
-            System.out.println(email + "发送成功");
-            FileUtils.writeStringToFile(new File("F:\\volfine\\开发信\\result.txt"),email + "发送成功\r\n");
-            Thread.sleep(300000L);
-        }
-
     }
 }

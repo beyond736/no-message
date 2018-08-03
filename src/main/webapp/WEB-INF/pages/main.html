@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="author" content="SHOP++ Team">
+    <meta name="copyright" content="SHOP++">
+    <title>商家中心 - Powered By SHOP++</title>
+    <link href="/favicon.ico" rel="icon">
+    <link href="/resources/business/css/bootstrap.css" rel="stylesheet">
+    <link href="/resources/business/css/font-awesome.css" rel="stylesheet">
+    <link href="/resources/business/css/animate.css" rel="stylesheet">
+    <link href="/resources/business/css/adminLTE.css" rel="stylesheet">
+    <link href="/resources/business/css/common.css" rel="stylesheet">
+    <link href="/resources/business/css/index.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="/resources/business/js/html5shiv.js"></script>
+    <script src="/resources/business/js/respond.js"></script>
+    <![endif]-->
+    <script src="/resources/business/js/jquery.js"></script>
+    <script src="/resources/business/js/bootstrap.js"></script>
+    <script src="/resources/business/js/moment.js"></script>
+    <script src="/resources/business/js/g2.js"></script>
+    <script src="/resources/business/js/adminLTE.js"></script>
+    <script src="/resources/business/js/common.js"></script>
+    <script type="text/javascript">
+        $().ready(function () {
+
+            var $modal = $("#modal");
+
+
+            // 订单完成数图表
+            var completeOrderCountChart = new G2.Chart({
+                id: "completeOrderCountChart",
+                height: 200,
+                forceFit: true,
+                plotCfg: {
+                    margin: [20, 20, 30, 80]
+                }
+            });
+
+            completeOrderCountChart.source([], {
+                date: {
+                    type: "time",
+                    tickCount: 10,
+                    formatter: function (value) {
+                        return moment(value).format("YYYY-MM-DD");
+                    }
+                },
+                value: {
+                    alias: "订单完成数"
+                }
+            });
+            completeOrderCountChart.axis("date", {
+                title: null,
+                formatter: function (value) {
+                    return moment(value).format("MM-DD");
+                }
+            });
+            completeOrderCountChart.axis("value", {
+                title: null
+            });
+            completeOrderCountChart.line().position("date*value").color("#66baff");
+            completeOrderCountChart.render();
+
+            $.ajax({
+                url: "/business/order_statistic/data",
+                type: "get",
+                data: {
+                    type: "completeOrderCount"
+                },
+                dataType: "json",
+                success: function (data) {
+                    completeOrderCountChart.changeData(data);
+                }
+            });
+
+            // 订单完成金额图表
+            var completeOrderAmountChart = new G2.Chart({
+                id: "completeOrderAmountChart",
+                height: 200,
+                forceFit: true,
+                plotCfg: {
+                    margin: [20, 20, 30, 80]
+                }
+            });
+
+            completeOrderAmountChart.source([], {
+                date: {
+                    type: "time",
+                    tickCount: 10,
+                    formatter: function (value) {
+                        return moment(value).format("YYYY-MM-DD");
+                    }
+                },
+                value: {
+                    alias: "订单完成金额",
+                    formatter: function (value) {
+                        return currency(value, true);
+                    }
+                }
+            });
+            completeOrderAmountChart.axis("date", {
+                title: null,
+                formatter: function (value) {
+                    return moment(value).format("MM-DD");
+                }
+            });
+            completeOrderAmountChart.axis("value", {
+                title: null
+            });
+            completeOrderAmountChart.line().position("date*value").color("#ffab66");
+            completeOrderAmountChart.render();
+
+            $.ajax({
+                url: "/business/order_statistic/data",
+                type: "get",
+                data: {
+                    type: "completeOrderAmount"
+                },
+                dataType: "json",
+                success: function (data) {
+                    completeOrderAmountChart.changeData(data);
+                }
+            });
+        });
+    </script>
+</head>
+<body class="index hold-transition sidebar-mini">
+<div id="modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">提示信息</h4>
+            </div>
+            <div class="modal-body">
+                店铺已关闭
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-default" href="/business/logout">退出</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="wrapper">
+    #include("include/header.html")
+    #include("include/main-slider.html")
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            <section class="content-header">
+                <h1>商家中心</h1>
+            </section>
+            <section class="content">
+                <div class="store-info box">
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-xs-2">
+                                <a class="logo" target="_blank" href="/store/2">
+                                    <img src="http://localhost:8080/upload/image/201807/a1a7dd80-aead-46d1-8023-09fa9bfafdf1.jpg"
+                                         alt="中彩旗舰店">
+                                </a>
+                            </div>
+                            <div class="col-xs-4">
+                                <p>名称: 中彩旗舰店</p>
+                                <p>店铺等级: 金牌店铺</p>
+                            </div>
+                            <div class="col-xs-6">
+                                <p>
+                                    余额:
+                                    <span class="orange">￥0.00元</span>
+                                </p>
+                                <p>
+                                    到期日期:
+                                    <span class="orange">2020-01-01</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="order-info box">
+                            <div class="box-header with-border">
+                                <h4>订单信息</h4>
+                            </div>
+                            <div class="box-body">
+                                <a href="/business/order/list?status=pendingPayment">
+                                    <div class="img-circle" style="background-color: #5ec4f7">
+                                        <span class="fa fa-credit-card"></span>
+                                    </div>
+                                    <div class="pull-left">
+                                        <p>等待付款</p>
+                                        数量: 0
+                                    </div>
+                                </a>
+                                <a href="/business/order/list?status=pendingReview">
+                                    <div class="img-circle" style="background-color: #fa8144">
+                                        <span class="fa fa-user-o"></span>
+                                    </div>
+                                    <div class="pull-left">
+                                        <p>等待审核</p>
+                                        数量: 0
+                                    </div>
+                                </a>
+                                <a href="/business/order/list?status=pendingShipment">
+                                    <div class="img-circle" style="background-color: #fbb040">
+                                        <span class="fa fa-truck"></span>
+                                    </div>
+                                    <div class="pull-left">
+                                        <p>等待发货</p>
+                                        数量: 0
+                                    </div>
+                                </a>
+                                <a href="/business/order/list?isPendingRefunds=true">
+                                    <div class="img-circle" style="background-color: #f2d549">
+                                        <span class="fa fa-rmb"></span>
+                                    </div>
+                                    <div class="pull-left">
+                                        <p>等待退款</p>
+                                        数量: 0
+                                    </div>
+                                </a>
+                                <a href="/business/order/list?status=received">
+                                    <div class="img-circle" style="background-color: #72ce52">
+                                        <span class="fa fa-check-square-o"></span>
+                                    </div>
+                                    <div class="pull-left">
+                                        <p>已收货</p>
+                                        数量: 0
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="product-info box">
+                            <div class="box-header with-border">
+                                <h4>商品信息</h4>
+                            </div>
+                            <div class="box-body">
+                                <a class="btn btn-default" href="/business/product/list?isMarketable=true">
+                                    已上架
+                                    <span class="badge">25</span>
+                                </a>
+                                <a class="btn btn-default" href="/business/product/list?isOutOfStock=true">
+                                    缺货
+                                    <span class="badge">0</span>
+                                </a>
+                                <a class="btn btn-default" href="/business/product/list?isActive=false">
+                                    无效
+                                    <span class="badge">0</span>
+                                </a>
+                                <a class="btn btn-default" href="/business/product/list?isTop=true">
+                                    置顶
+                                    <span class="badge">10</span>
+                                </a>
+                                <a class="btn btn-default" href="/business/product/list?isStockAlert=true">
+                                    库存警告
+                                    <span class="badge">0</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <h4>订单完成数统计</h4>
+                            </div>
+                            <div class="box-body">
+                                <div id="completeOrderCountChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <h4>订单完成金额统计</h4>
+                            </div>
+                            <div class="box-body">
+                                <div id="completeOrderAmountChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    #include("include/footer.html")
+</div>
+</body>
+</html>

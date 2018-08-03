@@ -27,6 +27,15 @@ public abstract class BaseProduct<M extends BaseProduct<M>> extends Model<M> imp
 		return getStr("model");
 	}
 
+	public M setClassify(java.lang.String classify) {
+		set("classify", classify);
+		return (M)this;
+	}
+	
+	public java.lang.String getClassify() {
+		return getStr("classify");
+	}
+
 	public M setBasePrice(java.math.BigDecimal basePrice) {
 		set("base_price", basePrice);
 		return (M)this;
@@ -43,6 +52,33 @@ public abstract class BaseProduct<M extends BaseProduct<M>> extends Model<M> imp
 	
 	public java.math.BigDecimal getSalePrice() {
 		return get("sale_price");
+	}
+
+	public M setCreateDate(java.util.Date createDate) {
+		set("create_date", createDate);
+		return (M)this;
+	}
+	
+	public java.util.Date getCreateDate() {
+		return get("create_date");
+	}
+
+	public M setWarranty(java.lang.String warranty) {
+		set("warranty", warranty);
+		return (M)this;
+	}
+	
+	public java.lang.String getWarranty() {
+		return getStr("warranty");
+	}
+
+	public M setWeight(java.lang.Float weight) {
+		set("weight", weight);
+		return (M)this;
+	}
+	
+	public java.lang.Float getWeight() {
+		return getFloat("weight");
 	}
 
 }

@@ -6,14 +6,14 @@ import com.volfine.service.ProductService;
 
 public class IndexController extends Controller {
 
-    ProductService service = ProductService.me;
+    ProductService productService = ProductService.me;
 
-    public void index(){
-        renderJson("{}");
+    public void index() {
+        renderJsp("login.html");
     }
 
     public void save() {
-        Page page = service.paginate(1, 10);
+        Page page = productService.paginate(1, 10);
         renderJson(page);
     }
 

@@ -1,0 +1,43 @@
+#define boxHeader(addUrl,pageSize)
+<div class="box-header">
+    <div class="row">
+        <div class="col-xs-9">
+            <div class="btn-group">
+                <a class="btn btn-default" href="#(addUrl)">
+                    <i class="fa fa-plus"></i>
+                    添加
+                </a>
+                <button id="delete" class="btn btn-default" type="button" disabled>
+                    <i class="fa fa-times"></i>
+                    删除
+                </button>
+                <button class="btn btn-default" type="button" data-toggle="refresh">
+                    <i class="fa fa-refresh"></i>
+                    刷新
+                </button>
+                <div class="btn-group">
+                    <button class="btn btn-default dropdown-toggle" type="button"
+                            data-toggle="dropdown">
+                        每页显示
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li #if (pageSize == 10)class="active"#end data-page-size="10">
+                            <a href="javascript:;">10</a>
+                        </li>
+                        <li #if (pageSize == 20)class="active"#end data-page-size="20">
+                            <a href="javascript:;">20</a>
+                        </li>
+                        <li #if (pageSize == 50)class="active"#end data-page-size="50">
+                            <a href="javascript:;">50</a>
+                        </li>
+                        <li #if (pageSize == 100)class="active"#end data-page-size="100">
+                            <a href="javascript:;">100</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+#end

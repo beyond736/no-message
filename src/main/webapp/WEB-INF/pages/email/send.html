@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="author" content="SHOP++ Team">
+    <meta name="copyright" content="SHOP++">
+    <title>添加快递单模板 - Powered By SHOP++</title>
+    #include("../include/meta.html")
+    <script id="tagSelectTemplate" type="text/template">
+        <select name="tagSelect" class="form-control">
+            <option value="">添加标签</option>
+            <%_.each(tagOptions, function(tagOption, i) {%>
+            <option value="<%-tagOption.value%>"><%-tagOption.name%></option>
+            <%})%>
+        </select>
+    </script>
+    <script type="text/javascript">
+        $().ready(function () {
+
+            var $deliveryTemplateForm = $("#deliveryTemplateForm");
+            var $content = $("#content");
+            var $background = $("#background");
+            var $width = $("#width");
+            var $height = $("#height");
+            var tagSelectTemplate = _.template($("#tagSelectTemplate").html());
+            var tagOptions = [
+                {
+                    name: "客户名称",
+                    value: "{customerName}"
+                },
+                {
+                    name: "产品信息",
+                    value: "{productInfo}"
+                }
+            ];
+            var summernoteOptions = {
+                width: 850,
+                height: 400,
+                tableClassName: "table table-dashed",
+                insertTableMaxSize: {
+                    col: 30,
+                    row: 30
+                },
+                toolbar: [
+                    ["addTags", ["addTags"]],
+                    ["style", ["bold", "italic", "underline", "clear", "strikethrough"]],
+                    ["fontname", ["fontname"]],
+                    ["fontsize", ["fontsize"]],
+                    ["color", ["color"]],
+                    ["height", ["height"]],
+                    ["para", ["ul", "ol", "paragraph"]],
+                    ["insert", ["table", "picture", "hr"]],
+                    ["view", ["codeview"]]
+                ],
+                buttons: {
+                    addTags: function () {
+                        return tagSelectTemplate({
+                            tagOptions: tagOptions
+                        });
+                    }
+                },
+                hint: {
+                    words: $.map(tagOptions, function (tagOption) {
+                        return tagOption.value;
+                    }),
+                    match: /\B\{(\w*)$/,
+                    search: function (keyword, callback) {
+                        callback($.grep(this.words, function (item) {
+                            return item.indexOf(keyword) === 0;
+                        }));
+                    }
+                },
+                callbacks: {
+                    onInit: function () {
+                        $("[name='tagSelect']").selectpicker({
+                            width: "auto"
+                        }).on("change", function () {
+                            var $element = $(this);
+
+                            $content.summernote("insertText", $element.val());
+                        });
+                    }
+                }
+            }
+
+
+            // 内容
+            $content.summernote(summernoteOptions);
+
+            // 背景图
+            $background.data("file").on("fileuploaded", function (event, data, previewId, index) {
+                refreshSummernote();
+            });
+
+            // 宽度、高度
+            $width.add($height).on("input propertychange change", function () {
+                refreshSummernote();
+            });
+
+            // 刷新文本编辑器
+            function refreshSummernote() {
+                var validator = $deliveryTemplateForm.validate();
+                var code = $content.summernote("code");
+                var width = $width.val();
+                var height = $height.val();
+                var background = $background.val();
+
+                if (validator.element($width) && validator.element($height) && (summernoteOptions.width != width || summernoteOptions.height != height)) {
+                    $.extend(summernoteOptions, {
+                        width: width,
+                        height: height
+                    });
+                    if ($content.data("summernote") != null) {
+                        $content.summernote("destroy");
+                    }
+                    $content.summernote(summernoteOptions).summernote("code", code);
+                }
+
+                $content.data("summernote").layoutInfo.editable.css("background", "url(" + background + ") 0px 0px no-repeat");
+            }
+
+            $.validator.addMethod("notEmpty", function (value, element, param) {
+                var $element = $(element);
+
+                return $element.data("summernote") != null && !$element.summernote("isEmpty");
+            }, "内容不允许为空");
+
+            // 表单验证
+            $deliveryTemplateForm.validate({
+                rules: {
+                    name: "required",
+                    content: "notEmpty",
+                    width: {
+                        required: true,
+                        integer: true,
+                        min: 1
+                    },
+                    height: {
+                        required: true,
+                        integer: true,
+                        min: 1
+                    },
+                    offsetX: {
+                        required: true,
+                        integer: true
+                    },
+                    offsetY: {
+                        required: true,
+                        integer: true
+                    }
+                }
+            });
+
+        });
+    </script>
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    #include("../include/header.html")
+    #include("../include/main-slider.html")
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            <section class="content-header">
+                <h1>添加快递单模板</h1>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="/business/index">
+                            <i class="fa fa-home"></i>
+                            首页
+                        </a>
+                    </li>
+                    <li class="active">添加快递单模板</li>
+                </ol>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form id="deliveryTemplateForm" class="form-horizontal" action="/email/doSend" method="post">
+                            <div class="box">
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label item-required">发送账号:</label>
+                                        <div class="col-xs-4">
+                                            <select id="emailAccountId" name="emailAccountId" class="selectpicker form-control" data-live-search="true" data-size="10">
+                                                <option value="">请选择...</option>
+                                                #for(item : list)
+                                                <option value="#(item.id)" title="#(item.account)">#(item.account)</option>
+                                                #end
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label item-required">收件人:</label>
+                                        <div class="col-xs-4">
+                                            <textarea name="recipients" style="width: 850px;height: 200px;"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label item-required">邮件内容:</label>
+                                        <div class="col-xs-10">
+                                            <textarea id="content" name="content"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-footer">
+                                    <div class="row">
+                                        <div class="col-xs-4 col-xs-offset-2">
+                                            <button class="btn btn-primary" type="submit">确 定</button>
+                                            <button class="btn btn-default" type="button" data-toggle="back">返 回
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    #include("../include/footer.html")
+</div>
+</body>
+</html>

@@ -2,3 +2,4 @@ jdbcUrl = jdbc:mysql://localhost/volfine?characterEncoding=utf8&zeroDateTimeBeha
 user = root
 password = admin
 devMode = true
+showSql = true

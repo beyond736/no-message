@@ -1,11 +1,15 @@
 package com.volfine.common;
 
 import com.jfinal.config.*;
+import com.jfinal.config.Constants;
+import com.jfinal.ext.handler.ContextPathHandler;
+import com.jfinal.ext.interceptor.SessionInViewInterceptor;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.template.Engine;
-import com.volfine.controller.IndexController;
+import com.volfine.controller.*;
+import com.volfine.interceptor.UrlInterceptor;
 import com.volfine.model._MappingKit;
 
 /**
@@ -29,12 +33,22 @@ public class VolfineConfig extends JFinalConfig {
      * 配置路由
      */
     public void configRoute(Routes me) {
-        me.add("/", IndexController.class, "/index");    // 第三个参数为该Controller的视图存放路径
+        me.setBaseViewPath("/WEB-INF/pages");
+        //me.add("/", IndexController.class);    // 第三个参数为该Controller的视图存放路径
+        me.add("/", AdminController.class);
+        me.add("/product", ProductController.class);
+        me.add("/category", CategoryController.class);
+        me.add("/email", EmailController.class);
+        me.add("/supplier", SupplierController.class);
+        me.add("/order", OrderController.class);
+        me.add("/customer", CustomerController.class);
+        me.add("/quoted", QuotedController.class);
     }
 
     public void configEngine(Engine me) {
-        me.addSharedFunction("/common/_layout.html");
-        me.addSharedFunction("/common/_paginate.html");
+        me.addSharedFunction("/WEB-INF/pages/include/pagination.html");
+        me.addSharedFunction("/WEB-INF/pages/include/box-header.html");
+        me.addSharedObject("sk", new com.jfinal.kit.StrKit());
     }
 
     /**
@@ -48,6 +62,7 @@ public class VolfineConfig extends JFinalConfig {
         // 配置ActiveRecord插件
         ActiveRecordPlugin arp = new ActiveRecordPlugin(druidPlugin);
         // 所有映射在 MappingKit 中自动化搞定
+        arp.setShowSql(PropKit.getBoolean("showSql", true));
         _MappingKit.mapping(arp);
         me.add(arp);
     }
@@ -60,13 +75,14 @@ public class VolfineConfig extends JFinalConfig {
      * 配置全局拦截器
      */
     public void configInterceptor(Interceptors me) {
-
+        me.add(new SessionInViewInterceptor());
+        me.add(new UrlInterceptor());
     }
 
     /**
      * 配置处理器
      */
     public void configHandler(Handlers me) {
-
+        me.add(new ContextPathHandler("ctx"));
     }
 }

@@ -1,0 +1,73 @@
+<header class="main-header">
+    <a class="logo" href="/business/index">
+		<span class="logo-mini">
+			<img class="img-circle" src="http://localhost:8080/upload/image/201807/a1a7dd80-aead-46d1-8023-09fa9bfafdf1.jpg" alt="深圳沃丰科技有限公司">
+		</span>
+        <span class="logo-lg">深圳沃丰科技有限公司</span>
+    </a>
+    <nav class="navbar navbar-static-top">
+        <div class="container-fluid">
+            <a class="sidebar-toggle" href="javascript:;" data-toggle="offcanvas"></a>
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="/business/store/setting">
+                            <img class="img-circle" src="http://localhost:8080/upload/image/201807/a1a7dd80-aead-46d1-8023-09fa9bfafdf1.jpg" alt="深圳沃丰科技有限公司">
+                            <span class="hidden-xs">#(session.true_name)</span>
+                        </a>
+                    </li>
+                    <li class="dropdown notifications-menu">
+                        <a class="dropdown-toggle" href="javascript:;" data-toggle="dropdown">
+                            <span class="fa fa-bell-o"></span>
+                            <div class="label">
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="header">
+                                <span class="fa fa-warning text-orange"></span>
+                                <strong>提醒信息</strong>
+                            </li>
+                            <li>
+                                <ul class="menu">
+                                    <li>
+                                        <a href="/business/order/list?status=pendingPayment&hasExpired=false">
+                                            <span class="fa fa-credit-card text-aqua"></span>
+                                            0个待付款订单
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/business/order/list?status=pendingReview&hasExpired=false">
+                                            <span class="fa fa-user-o text-red"></span>
+                                            0个待审核订单
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/business/order/list?status=pendingShipment">
+                                            <span class="fa fa-truck text-green"></span>
+                                            0个待发货订单
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/business/order/list?isPendingRefunds=true">
+                                            <span class="fa fa-rmb text-yellow"></span>
+                                            0个待退款订单
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="footer">
+                                <a href="/business/order/list">查看所有订单</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="logout" href="/loginOut">
+                            <span class="fa fa-sign-out"></span>
+                            注销
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="author" content="SHOP++ Team">
+    <meta name="copyright" content="SHOP++">
+    <title>编辑客户 - Powered By SHOP++</title>
+    #include("../include/meta.html")
+    <script type="text/javascript">
+        $().ready(function () {
+
+            var $storeProductCategoryForm = $("#storeProductCategoryForm");
+
+            // 表单验证
+            $storeProductCategoryForm.validate({
+                rules: {
+                    "supplier.company": "required",
+                    "supplier.qq": "digits"
+                }
+            });
+
+        });
+    </script>
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    #include("../include/header.html")
+    #include("../include/main-slider.html")
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            <section class="content-header">
+                <h1>编辑客户</h1>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="/business/index">
+                            <i class="fa fa-home"></i>
+                            首页
+                        </a>
+                    </li>
+                    <li class="active">编辑客户</li>
+                </ol>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form id="storeProductCategoryForm" class="form-horizontal" action="/customer/save" method="post" autocomplete="off">
+                            <input type="hidden" name="customer.id" value="#(customer.id)">
+                            <div class="box">
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label item-required" for="name">客户名:</label>
+                                        <div class="col-xs-4">
+                                            <input id="name" name="customer.name" value="#(customer.name)" class="form-control" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label" for="country">国家:</label>
+                                        <div class="col-xs-4">
+                                            <select id="country" name="customer.country" class="selectpicker form-control" data-live-search="true" data-size="10">
+                                                <option value="#(customer.country)">#(customer.country)</option>
+                                                #for(item : countryList)
+                                                <option value="#(item.country)" title="#(item.country)">#(item.country)</option>
+                                                #end
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label" for="phone">电话:</label>
+                                        <div class="col-xs-4">
+                                            <input id="phone" name="customer.phone" value="#(customer.phone)" class="form-control" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-xs-2 control-label" for="email">邮箱:</label>
+                                        <div class="col-xs-4">
+                                            <input id="email" name="customer.email" value="#(customer.email)" class="form-control" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-footer">
+                                    <div class="row">
+                                        <div class="col-xs-4 col-xs-offset-2">
+                                            <button class="btn btn-primary" type="submit">确 定</button>
+                                            <button class="btn btn-default" type="button" data-toggle="back">返 回
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    #include("../include/footer.html")
+</div>
+</body>
+</html>

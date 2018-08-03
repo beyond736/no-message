@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="author" content="SHOP++ Team">
+    <meta name="copyright" content="SHOP++">
+    <title>商品列表 - Powered By SHOP++</title>
+    <link href="/favicon.ico" rel="icon">
+    #include("../include/meta.html")
+    <script type="text/javascript">
+        $().ready(function () {
+
+            var $delete = $("#delete");
+            var $shelves = $("#shelves");
+            var $shelf = $("#shelf");
+            var $checkAll = $("[data-toggle='checkAll']");
+            var $ids = $("input[name='ids']");
+
+
+            // 删除
+            $delete.deleteItem({
+                url: "/business/product/delete",
+                data: function () {
+                    return $ids.serialize();
+                },
+                removeElement: function () {
+                    return $ids.filter(":checked").closest("tr");
+                },
+                complete: function () {
+                    $ids = $("input[name='ids']");
+                    $delete.add($shelves).add($shelf).attr("disabled", true);
+                    $checkAll.checkAll("uncheck");
+                    if ($ids.size() < 1) {
+                        setTimeout(function () {
+                            location.reload(true);
+                        }, 3000);
+                    }
+                }
+            });
+
+            // 上架
+            $shelves.click(function () {
+                if (confirm("您确定要上架吗？")) {
+                    $.post("/business/product/shelves", $ids.serialize(), function () {
+                        setTimeout(function () {
+                            location.reload(true);
+                        }, 3000);
+                    });
+                }
+            });
+
+            // 下架
+            $shelf.click(function () {
+                if (confirm("您确定要下架吗？")) {
+                    $.post("/business/product/shelf", $ids.serialize(), function () {
+                        setTimeout(function () {
+                            location.reload(true);
+                        }, 3000);
+                    });
+                }
+            });
+
+            // ID多选框
+            $ids.on("ifChanged", function () {
+                $delete.add($shelves).add($shelf).attr("disabled", $ids.filter(":checked").size() < 1);
+            });
+
+        });
+    </script>
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    #include("../include/header.html")
+    #include("../include/main-slider.html")
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            <section class="content-header">
+                <h1>商品列表</h1>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="/business/index">
+                            <i class="fa fa-home"></i>
+                            首页
+                        </a>
+                    </li>
+                    <li class="active">商品列表</li>
+                </ol>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form action="/product/list" method="post" autocomplete="off">
+                            <input name="pageSize" type="hidden" value="#(page.pageSize)">
+                            <input name="pageNumber" type="hidden" value="#(page.pageNumber)">
+                            <input name="searchProperty" type="hidden" value="">
+                            <input name="orderProperty" type="hidden" value="">
+                            <input name="orderDirection" type="hidden" value="">
+                            <div class="box">
+                                #@boxHeader('/product/add', page.pageSize)
+                                <div class="box-body table-responsive no-padding">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <i class="check-all fa fa-square-o" data-toggle="checkAll"></i>
+                                                </th>
+                                                <th>
+                                                    <a href="javascript:;" data-order-property="sn">
+                                                        编号
+                                                        <i class="fa fa-sort"></i>
+                                                    </a>
+                                                </th>
+                                                <th>
+                                                    <a href="javascript:;" data-order-property="name">
+                                                        名称
+                                                        <i class="fa fa-sort"></i>
+                                                    </a>
+                                                </th>
+                                                <th>
+                                                    <a href="javascript:;" data-order-property="productCategory">
+                                                        商品分类
+                                                        <i class="fa fa-sort"></i>
+                                                    </a>
+                                                </th>
+                                                <th>
+                                                    <a href="javascript:;" data-order-property="price">
+                                                        销售价
+                                                        <i class="fa fa-sort"></i>
+                                                    </a>
+                                                </th>
+                                                <th>
+                                                    <a href="javascript:;" data-order-property="isActive">
+                                                        是否有效
+                                                        <i class="fa fa-sort"></i>
+                                                    </a>
+                                                </th>
+                                                <th>
+                                                    <a href="javascript:;" data-order-property="createdDate">
+                                                        创建日期
+                                                        <i class="fa fa-sort"></i>
+                                                    </a>
+                                                </th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            #for(item : page.getList())
+                                                <tr>
+                                                    <td>
+                                                        <input name="ids" type="checkbox" value="#(item.id)">
+                                                    </td>
+                                                    <td>
+                                                        <span class="">20160101140</span>
+                                                    </td>
+                                                    <td>
+                                                        <span title="索尼 KDL-50W700B">#(item.model)</span>
+                                                    </td>
+                                                    <td>#(item.classify)</td>
+                                                    <td>#(item.model)</td>
+                                                    <td>
+                                                        <i class="fa fa-check"></i>
+                                                    </td>
+                                                    <td>
+                                                        <span>#date(item.createDate, "yyyy-MM-dd HH:mm:ss")</span>
+                                                    </td>
+                                                    <td>
+                                                        <a href="/business/product/edit?productId=40">[编辑]</a>
+                                                        <a href="/product/detail/40" target="_blank">[查看]</a>
+                                                    </td>
+                                                </tr>
+                                            #end
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="box-footer clearfix">
+                                    #@pagination(page.pageNumber, page.totalPage)
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    #include("../include/footer.html")
+</div>
+</body>
+</html>

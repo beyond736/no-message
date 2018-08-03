@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="author" content="SHOP++ Team">
+    <meta name="copyright" content="SHOP++">
+    <title>添加订单 - Powered By SHOP++</title>
+    #include("../include/meta.html")
+    <script type="text/javascript">
+        $().ready(function () {
+
+            var $customerSelect = $(".customer-select");
+            var $supplierSelect = $(".supplier-select");
+            var $addProduct = $(".add-product");
+
+            $customerSelect.selectpicker({
+                liveSearch: true
+            }).ajaxSelectPicker({
+                ajax: {
+                    url: "/order/customerSelect",
+                    type: "GET",
+                    data: function () {
+                        return {
+                            keyword: "{{{q}}}"
+                        };
+                    },
+                    dataType: "json"
+                },
+                preprocessData: function (data) {
+                    return $.map(data, function (item) {
+                        return {
+                            value: item.id,
+                            text: item.name,
+                            disabled: false
+                        };
+                    });
+                },
+                preserveSelected: false
+            });
+
+            $supplierSelect.selectpicker({
+                liveSearch: true
+            }).ajaxSelectPicker({
+                ajax: {
+                    url: "/order/supplierSelect",
+                    type: "GET",
+                    data: function () {
+                        return {
+                            keyword: "{{{q}}}"
+                        };
+                    },
+                    dataType: "json"
+                },
+                preprocessData: function (data) {
+                    return $.map(data, function (item) {
+                        return {
+                            value: item.id,
+                            text: item.company,
+                            disabled: false
+                        };
+                    });
+                },
+                preserveSelected: false
+            });
+
+            $addProduct.click(function() {
+                var tr = [];
+                tr.push('<tr>');
+                tr.push('    <td><select name="order.supplierId" class="supplier-select form-control" title="输入供应商检索"></select></td>');
+                tr.push('    <td><input name="" class="parameter-entry-value form-control" type="text" maxlength="20"></td>');
+                tr.push('    <td><input name="" class="parameter-entry-value form-control" type="text" maxlength="20"></td>');
+                tr.push('    <td><input name="" class="parameter-entry-value form-control" type="text" maxlength="20"></td>');
+                tr.push('    <td><input name="" class="parameter-entry-value form-control" type="text" maxlength="20"></td>');
+                tr.push('    <td><input name="" class="parameter-entry-value form-control" type="text" maxlength="20"></td>');
+                tr.push('    <td>');
+                tr.push('        <a class="delete" href="javascript:;" onclick="del(this)">[X]</a>');
+                tr.push('    </td>');
+                tr.push('</tr>');
+                $(tr.join("")).insertAfter($("tr.line-one"));
+            });
+        });
+
+        function del(obj) {
+            var $tr_size = $(".table tbody").find("tr").size();
+            if ($tr_size == 1) {
+                $.alert("warning", "必须保留一条产品信息");
+            } else {
+                var $this = $(obj);
+                $this.parents("tr").remove();
+            }
+        }
+    </script>
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    #include("../include/header.html")
+    #include("../include/main-slider.html")
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            <section class="content-header">
+                <h1>添加订单</h1>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="/business/index">
+                            <i class="fa fa-home"></i>
+                            首页
+                        </a>
+                    </li>
+                    <li class="active">添加订单</li>
+                </ol>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form id="productForm" class="form-horizontal" action="/order/save" method="post" autocomplete="off">
+                            <input id="isDefault" name="sku.isDefault" type="hidden" value="true">
+                            <div class="box">
+                                <div class="box-body">
+                                    <div class="tab-content">
+                                        <div id="base" class="tab-pane active">
+                                            <div class="form-group">
+                                                <label class="col-xs-2 control-label">客户名:</label>
+                                                <div class="col-xs-4">
+                                                    <select name="order.customerId" class="customer-select form-control" title="请输入客户名称进行检索">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <!--<div class="form-group">
+                                                <label class="col-xs-2 control-label">供应商:</label>
+                                                <div class="col-xs-4">
+                                                    <select name="order.supplierId" class="supplier-select form-control" title="请输入供应商名称进行检索">
+                                                    </select>
+                                                </div>
+                                            </div>-->
+                                            <div class="form-group" style="padding-left: 85px;">
+                                                <div class="box">
+                                                    <div class="box-header">
+                                                        <div class="row">
+                                                            <div class="col-xs-9">
+                                                                <div class="btn-group">
+                                                                    <a class="btn btn-default add-product">
+                                                                        <i class="fa fa-plus"></i>
+                                                                        添加
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="box-body table-responsive no-padding" style="overflow: visible;">
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                            <tr>
+                                                                <th>供应商</th>
+                                                                <th>产品型号</th>
+                                                                <th>购买数量</th>
+                                                                <th>销售单价</th>
+                                                                <th>条件</th>
+                                                                <th>小计</th>
+                                                                <th>操作</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr class="line-one">
+                                                                <td>
+                                                                    <select name="order.supplierId" class="supplier-select form-control" title="输入供应商检索"></select>
+                                                                </td>
+                                                                <td><input name="" class="parameter-entry-value form-control" type="text" maxlength="20"></td>
+                                                                <td><input name="" class="parameter-entry-value form-control" type="text" maxlength="20"></td>
+                                                                <td><input name="" class="parameter-entry-value form-control" type="text" maxlength="20"></td>
+                                                                <td><input name="" class="parameter-entry-value form-control" type="text" maxlength="20"></td>
+                                                                <td><input name="" class="parameter-entry-value form-control" type="text" maxlength="20"></td>
+                                                                <td>
+                                                                    <a class="del" href="javascript:;" onclick="del(this)">[X]</a>
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-2 control-label" for="shippingCost">物流费:</label>
+                                                <div class="col-xs-4">
+                                                    <input id="shippingCost" name="order.shippingCost" class="form-control" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-2 control-label" for="bankCharge">银行手续费:</label>
+                                                <div class="col-xs-4">
+                                                    <input id="bankCharge" name="order.bankCharge" class="form-control" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-2 control-label" for="total">销售总价:</label>
+                                                <div class="col-xs-4">
+                                                    <input id="total" name="order.total" class="form-control" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-2 control-label" for="purchaseUnitPrice">采购价:</label>
+                                                <div class="col-xs-4">
+                                                    <input id="purchaseUnitPrice" name="order.purchaseUnitPrice" class="form-control" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-2 control-label" for="expressFee">快递费:</label>
+                                                <div class="col-xs-4">
+                                                    <input id="expressFee" name="order.expressFee" class="form-control" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-2 control-label" for="purchaseAmount">采购总价:</label>
+                                                <div class="col-xs-4">
+                                                    <input id="purchaseAmount" name="order.purchaseAmount" class="form-control" type="text">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-2 control-label" for="remark">备注:</label>
+                                                <div class="col-xs-4">
+                                                    <input id="remark" name="order.remark" class="form-control" type="text">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-footer">
+                                    <div class="row">
+                                        <div class="col-xs-4 col-xs-offset-2">
+                                            <button class="btn btn-primary" type="submit">确 定</button>
+                                            <button class="btn btn-default" type="button" data-toggle="back">返 回
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+        </div>
+        </section>
+    </div>
+    #include("../include/footer.html")
+</div>
+</body>
+</html>

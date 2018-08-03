@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>登录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <link href="/favicon.ico" rel="icon">
+    <link href="/resources/business/css/bootstrap.css" rel="stylesheet">
+    <link href="/resources/business/css/font-awesome.css" rel="stylesheet">
+    <link href="/resources/business/css/animate.css" rel="stylesheet">
+    <link href="/resources/business/css/adminLTE.css" rel="stylesheet">
+    <link href="/resources/business/css/common.css" rel="stylesheet">
+    <link href="/resources/business/css/index.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="/resources/business/js/html5shiv.js"></script>
+    <script src="/resources/business/js/respond.js"></script>
+    <![endif]-->
+    <script src="/resources/business/js/jquery.js"></script>
+    <script src="/resources/business/js/bootstrap.js"></script>
+    <script src="/resources/business/js/moment.js"></script>
+    <script src="/resources/business/js/g2.js"></script>
+    <script src="/resources/business/js/adminLTE.js"></script>
+    <script src="/resources/business/js/common.js"></script>
+    <style type="text/css">
+        body {
+            color:#999;
+            background:url('https://cdn.demo.fastadmin.net/assets/img/loginbg.jpg');
+            background-size:cover;
+        }
+        a {
+            color:#fff;
+        }
+        .login-panel{margin-top:150px;}
+        .login-screen {
+            max-width:400px;
+            padding:0;
+            margin:100px auto 0 auto;
+
+        }
+        .login-screen .well {
+            border-radius: 3px;
+            -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: rgba(255,255,255, 0.2);
+        }
+        .login-screen .copyright {
+            text-align: center;
+        }
+        @media(max-width:767px) {
+            .login-screen {
+                padding:0 20px;
+            }
+        }
+        .profile-img-card {
+            height: 100px;
+            margin: 10px auto;
+            display: block;
+            -moz-border-radius: 50%;
+            -webkit-border-radius: 50%;
+            border-radius: 50%;
+        }
+        .profile-name-card {
+            text-align: center;
+        }
+
+        #login-form {
+            margin-top:20px;
+        }
+        #login-form .input-group {
+            margin-bottom:15px;
+        }
+
+    </style>
+    <script>
+        #if(sk.notBlank(error))
+            // $.alert("warning", '#(error)');
+            alert('#(error)');
+        #end
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="login-wrapper">
+        <div class="login-screen">
+            <div class="well">
+                <div class="login-form">
+                    <img id="profile-img" class="profile-img-card" src="/resources/business/images/logo.png" />
+
+                    <form action="/checkLogin" method="post" id="login-form"  autocomplete="off" >
+                        <div class="input-group">
+                            <div class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
+                            <input type="text" class="form-control" id="pd-form-username" placeholder="用户名" name="username" data-rule="用户名:required;username" />
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-group-addon"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></div>
+                            <input type="password" class="form-control" id="pd-form-password" placeholder="密码" name="password" data-rule="密码:required;password" />
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success btn-lg btn-block">登 录</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <p class="copyright"><a href="http://www.volfine.com">深圳沃丰科技有限公司</a></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

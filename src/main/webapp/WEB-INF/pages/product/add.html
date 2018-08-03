@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="author" content="SHOP++ Team">
+    <meta name="copyright" content="SHOP++">
+    <title>添加商品 - Powered By SHOP++</title>
+    <link href="/favicon.ico" rel="icon">
+    #include("../include/meta.html")
+    <script type="text/javascript">
+        $().ready(function () {
+
+            var $productForm = $("#productForm");
+            var $productCategoryId = $("#productCategoryId");
+            var $price = $("#price");
+            var $productImage = $("#productImage");
+            var $productImageFile = $("#productImage input:file");
+            var $sku = $("#sku");
+            var hasSpecification = false;
+
+            // 表单验证
+            $productForm.validate({
+                rules: {
+                    productCategoryId: "required",
+                    sn: {
+                        pattern: /^[0-9a-zA-Z_-]+$/,
+                        remote: {
+                            url: "/business/product/check_sn",
+                            cache: false
+                        }
+                    },
+                    "name": "required",
+                    "sku.price": {
+                        required: true,
+                        min: 0,
+                        decimal: {
+                            integer: 12,
+                            fraction: 2
+                        }
+                    },
+                    "sku.cost": {
+                        min: 0,
+                        decimal: {
+                            integer: 12,
+                            fraction: 2
+                        }
+                    },
+                    "sku.marketPrice": {
+                        min: 0,
+                        decimal: {
+                            integer: 12,
+                            fraction: 2
+                        }
+                    },
+                    "weight": "digits",
+                    "sku.rewardPoint": {
+                        digits: true,
+                        max: function () {
+                            return parseInt($price.val() * 1);
+                        }
+                    },
+                    "sku.exchangePoint": {
+                        digits: true,
+                        required: true
+                    },
+                    "sku.stock": {
+                        required: true,
+                        digits: true
+                    }
+                },
+                messages: {
+                    sn: {
+                        pattern: "非法字符",
+                        remote: "已存在"
+                    }
+                },
+                submitHandler: function (form) {
+                    if (hasSpecification && $sku.find("input.is-enabled:checked").size() < 1) {
+                        $.alert("请设置规格商品");
+                        return false;
+                    }
+                    if ($productImageFile.fileinput("getFileStack").length > 0) {
+                        $.alert("存在未上传商品图片");
+                        return false;
+                    }
+                    $productImage.find(".kv-preview-thumb input[name$='.order']").each(function (i) {
+                        $(this).val(i);
+                    });
+                    $productImage.find(".kv-zoom-thumb input").each(function () {
+                        $(this).prop("disabled", true);
+                    });
+                    addCookie("previousProductCategoryId", $productCategoryId.val(), {
+                        expires: 24 * 60 * 60
+                    });
+                    $(form).find("button:submit").prop("disabled", true);
+                    form.submit();
+                }
+            });
+
+        });
+    </script>
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+    #include("../include/header.html")
+    #include("../include/main-slider.html")
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>添加商品</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="/business/index">
+                        <i class="fa fa-home"></i>
+                        首页
+                    </a>
+                </li>
+                <li class="active">添加商品</li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form id="productForm" class="form-horizontal" action="/product/save" method="post" autocomplete="off">
+                            <input id="isDefault" name="sku.isDefault" type="hidden" value="true">
+                            <div class="box">
+                                <div class="box-body">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#base" data-toggle="tab">基本信息</a>
+                                        </li>
+                                        <li>
+                                            <a href="#introduction" data-toggle="tab">商品介绍</a>
+                                        </li>
+                                        <li>
+                                            <a href="#productImage" data-toggle="tab">采购信息</a>
+                                        </li>
+                                        <li>
+                                            <a href="#parameter" data-toggle="tab">商品参数</a>
+                                        </li>
+                                        <li>
+                                            <a href="#attribute" data-toggle="tab">商品属性</a>
+                                        </li>
+                                        <li>
+                                            <a href="#specification" data-toggle="tab">商品规格</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div id="base" class="tab-pane active">
+                                            <div class="form-group">
+                                                <label class="col-xs-2 control-label item-required">商品分类:</label>
+                                                <div class="col-xs-4">
+                                                    <select id="productCategoryId" name="productCategoryId" class="selectpicker form-control" data-live-search="true" data-size="10">
+                                                        <option value="">请选择...</option>
+                                                        #for(item : list)
+                                                            <option value="#(item.id)" title="#(item.name)">#(item.name)</option>
+                                                        #end
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-2 control-label item-required" for="name">名称型号:</label>
+                                                <div class="col-xs-4">
+                                                    <input id="name" name="name" class="form-control" type="text" maxlength="200">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-2 control-label item-required" for="price">保修期:</label>
+                                                <div class="col-xs-4">
+                                                    <input id="price" name="warranty" class="form-control" type="text" maxlength="16">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-2 control-label" for="weight">重量:</label>
+                                                <div class="col-xs-4">
+                                                    <input id="weight" name="weight" class="form-control" type="text" maxlength="9" title="单位：克">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-2 control-label" for="memo">备注:</label>
+                                                <div class="col-xs-4">
+                                                    <input id="memo" name="memo" class="form-control" type="text" maxlength="200">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="introduction" class="tab-pane">
+                                            <textarea name="introduction" data-provide="editor"></textarea>
+                                        </div>
+                                        <div id="productImage" class="tab-pane">
+                                            <div class="form-group">
+                                                <div class="col-xs-6">
+                                                    <input name="file" type="file" multiple>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="parameter" class="tab-pane">
+                                            <div class="form-group">
+                                                <div class="col-xs-10 col-xs-offset-2">
+                                                    <button id="addParameterButton" class="btn btn-default" type="button">
+                                                        <i class="fa fa-plus"></i>
+                                                        增加参数
+                                                    </button>
+                                                    <button class="btn btn-default" type="button" data-toggle="modal" data-target="#resetParameterModal">
+                                                        <i class="fa fa-repeat"></i>
+                                                        重置参数
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div id="parameterContent"></div>
+                                        </div>
+                                        <div id="attribute" class="tab-pane"></div>
+                                        <div id="specification" class="tab-pane">
+                                            <div class="form-group">
+                                                <div class="col-xs-10 col-xs-offset-2">
+                                                    <button class="btn btn-default" type="button" data-toggle="modal"
+                                                            data-target="#resetSpecificationModal">
+                                                        <i class="fa fa-repeat"></i>
+                                                        重置规格
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div id="specificationContent"></div>
+                                            <div id="sku"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-footer">
+                                    <div class="row">
+                                        <div class="col-xs-4 col-xs-offset-2">
+                                            <button class="btn btn-primary" type="submit">确 定</button>
+                                            <button class="btn btn-default" type="button" data-toggle="back">返 回
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    #include("../include/footer.html")
+</div>
+</body>
+</html>
